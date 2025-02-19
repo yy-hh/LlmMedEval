@@ -16,7 +16,7 @@ datasets = get_subdirectories(directory_path)
 
 url = "https://dify-srv02.weicha88.com/v1/chat-messages"
 headers = {
-    'Authorization': 'Bearer app-9PKbpgfpkXsMLg2uV6th9mvn',
+    'Authorization': 'Bearer your key',
 }
 
 
