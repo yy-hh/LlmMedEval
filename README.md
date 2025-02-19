@@ -2,6 +2,13 @@
 ## 评测数据集
 ![image](https://github.com/user-attachments/assets/8d00f882-77f0-43a9-a367-9d6d48b4a582)
 
+## 评测方法
+
+1. 把所有本地模型和调用的模型通过agent框架Dify封装的API调用（https://github.com/langgenius/dify）
+2. 修改eval.py中模型api和key 
+3. 创建结果修改结果输出目录
+4. 直接运行eval.py文件
+5. 通过MedBench提交（https://medbench.opencompass.org.cn/home）
 
 ## 评测结果
 
@@ -11,7 +18,8 @@
 | zuoyi              | 否       | 79       | 89.3         | 72.1         | 71.9         | 82.5         | 82             |
 | baichun-m1-preview | 是       | 62.8     | 72.2         | 74.4         | 65.7         | 41.8         | 76             |
 | Deepseek-r1-32B    | 是       | 67       | 78.5         | 71.9         | 60           | 57.9         | 71.2           |
-| 持续更新中   |          |          |              |              |              |              |                |
+|  Deepseek-r1-70B  |   待更新       |          |              |              |              |              |                |
+|  GPT4-O1mini  |     待更新      |          |              |              |              |              |                |
 
 ## 感谢MedBench提供测试数据
 
