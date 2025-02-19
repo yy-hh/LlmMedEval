@@ -14,7 +14,7 @@ url = "https://openapi.zuoshouyisheng.com/gpt-pro/v2/chat/completions"
 headers = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-  'X-API-KEY': 'ZOE-c3808dc6-85f7-4d4a-8843-0da4da3be720'
+  'X-API-KEY': 'your key'
 }
 # payload = json.dumps({
 #     "model": "zoe-gpt-pro",
