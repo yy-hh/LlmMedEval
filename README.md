@@ -4,10 +4,10 @@
 
 ## 评测方法
 
-1. 把所有本地模型和调用的模型通过agent框架Dify封装的API调用（https://github.com/langgenius/dify）
+1. 准备要评测的模型
 2. 修改eval.py中模型api和key 
 3. 修改结果输出目录
-4. 直接运行eval.py文件
+4. 直接运行main.py文件
 5. 通过MedBench提交（https://medbench.opencompass.org.cn/home）
 
 ## 评测结果
