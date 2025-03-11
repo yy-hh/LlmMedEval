@@ -10,6 +10,11 @@
 4. 直接运行main.py文件
 5. 通过MedBench提交（https://medbench.opencompass.org.cn/home）
 
+## 统一参数
+
+system prompt:You are a helpful assistant.
+temperature: 0
+
 ## 评测结果
 
 | 模型               | 是否开源 | 综合得分 | 医学知识问答 | 医学语言生成 | 复杂医学推理 | 医学语言理解 | 医疗安全和伦理 |
