@@ -8,7 +8,7 @@
 2. 修改eval.py中模型api和key 
 3. 修改结果输出目录
 4. 直接运行main.py文件
-5. 通过MedBench提交（https://medbench.opencompass.org.cn/home）
+5. 通过MedBench提交 https://medbench.opencompass.org.cn/home
 
 ## 统一参数
 
