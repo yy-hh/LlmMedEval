@@ -42,7 +42,7 @@ def eval(prompt):
     except Exception as err:
         print(err)
 
-#旧数据集测试
+#旧数据集测试,ddd
 #datasets = ['CHIP-CDEE', 'CHIP-CDN', 'CHIP-CTC', 'CMB-Clin', 'CMeEE', 'CMeIE', 'DBMHG', 'DDx-advanced', 'DDx-basic', 'DrugCA', 'IMCS-V2-MRG', 'Med-Exam', 'MedDG', 'MedHC', 'MedHG', 'MedMC', 'MedSafety', 'MedSpeQA', 'MedTreat', 'SMDoc']
 
 input_dir = '/data/shenchengwei/LlmMedEval/new_test_data_gpt5.2/test2'
