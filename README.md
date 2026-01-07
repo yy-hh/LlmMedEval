@@ -43,10 +43,6 @@ temperature: 0
 ```
 
 
-
-
-## 感谢MedBench提供测试数据
-
 ```
 @misc{ding2025medbenchv4robustscalable,
       title={MedBench v4: A Robust and Scalable Benchmark for Evaluating Chinese Medical Language Models, Multimodal Models, and Intelligent Agents}, 
