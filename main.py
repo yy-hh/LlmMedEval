@@ -11,7 +11,10 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 API_TOKEN = os.getenv('API_TOKEN', 'your_token')
 MODEL_NAME = os.getenv('MODEL_NAME', 'your_model')
 API_URL = os.getenv('API_URL', 'your_url')
-OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
+#旧数据集
+#OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
+#新数据集
+OUTPUT_DIR = f'new_test_results/test_result_{MODEL_NAME}'
 
 # 确保输出目录存在
 Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
@@ -35,18 +38,17 @@ def eval(prompt):
         response = requests.post(API_URL, headers=headers, json=json_data)
         response.raise_for_status()  # 检查HTTP请求是否成功
         
-        response_json = response.json()
-        rst = response_json['choices'][0]['message']['content'].split("</think>")
-        
-        if len(rst) > 1:
-            think = rst[0].replace("\n", "")
-            content = rst[1][2:]
-            logging.debug(f'思考过程：{think}')
-            logging.debug(f'结果：{content}')
-            return content
+        # 解析返回结果，取出 content 字段，并按 </think> 切分思考过程和最终答案
+        data=json.loads(response.text)
+        content_str= data['choices'][0]['message']['content']
+
+        if "</think>" in content_str:
+            parts = content_str.split("</think>", 1)
+            content = parts[1].lstrip()
         else:
-            logging.warning(f"API响应格式不符合预期: {response_json['choices'][0]['message']['content']}")
-            return response_json['choices'][0]['message']['content'] # 返回原始内容
+            content = content_str.strip()
+        return content
+
     except requests.exceptions.RequestException as e:
         logging.error(f"API请求错误: {e}")
         return None
@@ -60,15 +62,15 @@ def eval(prompt):
         logging.error(f"eval函数发生未知错误: {e}")
         return None
 
-def run_evaluation():
+def process_old_test_datasets():
     test_dataset_dir = Path('test_dataset')
     if not test_dataset_dir.is_dir():
-        logging.error(f"测试数据集目录 '{test_dataset_dir}' 不存在。请确保该目录存在并包含数据集。")
+        logging.warning(f"旧测试数据集目录 '{test_dataset_dir}' 不存在，跳过。")
         return
 
     datasets = [name.name for name in test_dataset_dir.iterdir() if name.is_dir()]
     if not datasets:
-        logging.warning(f"在 '{test_dataset_dir}' 目录中未找到任何数据集。")
+        logging.warning(f"在旧测试数据集目录 '{test_dataset_dir}' 中未找到任何数据集。")
         return
 
     for dataset in datasets:
@@ -76,10 +78,10 @@ def run_evaluation():
         output_file_path = Path(OUTPUT_DIR) / f'{dataset}_test.jsonl'
 
         if not input_file_path.is_file():
-            logging.warning(f"数据集 '{dataset}' 的输入文件 '{input_file_path}' 不存在，跳过。")
+            logging.warning(f"旧数据集 '{dataset}' 的输入文件 '{input_file_path}' 不存在，跳过。")
             continue
 
-        logging.info(f"开始处理数据集: {dataset}")
+        logging.info(f"开始处理旧数据集: {dataset}")
         try:
             with open(input_file_path, 'r', encoding='utf-8') as f_in, \
                     open(output_file_path, 'w', encoding='utf-8') as f_out:
@@ -87,24 +89,24 @@ def run_evaluation():
                     try:
                         content_data = json.loads(line)
                     except json.JSONDecodeError as e:
-                        logging.error(f"文件 '{input_file_path}' 第 {line_num} 行JSON解析错误: {e}")
+                        logging.error(f"旧数据集文件 '{input_file_path}' 第 {line_num} 行JSON解析错误: {e}")
                         continue
 
                     question = content_data.get('question')
                     options = content_data.get('options')
                     other = content_data.get('other')
-                    
+
                     if not question:
-                        logging.warning(f"文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
+                        logging.warning(f"旧数据集文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
                         continue
 
-                    prompt_content = "注意：禁止输出json格式结果，直接输出文本/n" + question
+                    prompt_content = "注意：禁止输出json格式结果，直接输出文本\n" + question
                     answer = eval(prompt_content)
 
                     if answer is not None:
-                        logging.info(f"数据集: {dataset}, 问题: {question[:50]}..., 回答: {answer[:50]}...")
+                        logging.info(f"旧数据集: {dataset}, 问题: {question[:50]}..., 回答: {answer[:50]}...")
                     else:
-                        logging.warning(f"数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
+                        logging.warning(f"旧数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
 
                     output_content = {
                         "question": question,
@@ -114,10 +116,70 @@ def run_evaluation():
                     }
                     f_out.write(json.dumps(output_content, ensure_ascii=False) + '\n')
         except IOError as e:
-            logging.error(f"处理文件 '{input_file_path}' 或 '{output_file_path}' 时发生IO错误: {e}")
+            logging.error(f"处理旧数据集文件 '{input_file_path}' 或 '{output_file_path}' 时发生IO错误: {e}")
         except Exception as e:
-            logging.error(f"处理数据集 '{dataset}' 时发生未知错误: {e}")
-    logging.info("所有数据集处理完成。")
+            logging.error(f"处理旧数据集 '{dataset}' 时发生未知错误: {e}")
+
+
+def process_new_test_datasets():
+    new_test_data_dir = Path('new_test_data')
+    if not new_test_data_dir.is_dir():
+        logging.warning(f"新测试数据集目录 '{new_test_data_dir}' 不存在，跳过。")
+        return
+
+    files = [p for p in new_test_data_dir.iterdir() if p.is_file() and p.suffix == '.jsonl']
+    if not files:
+        logging.warning(f"在新测试数据集目录 '{new_test_data_dir}' 中未找到任何 jsonl 文件。")
+        return
+
+    for input_file_path in files:
+        dataset = input_file_path.stem
+        output_file_path = Path(OUTPUT_DIR) / f'{dataset}_test.jsonl'
+
+        logging.info(f"开始处理新数据集: {dataset}")
+        try:
+            with open(input_file_path, 'r', encoding='utf-8') as f_in, \
+                    open(output_file_path, 'w', encoding='utf-8') as f_out:
+                for line_num, line in enumerate(f_in, 1):
+                    try:
+                        content_data = json.loads(line)
+                    except json.JSONDecodeError as e:
+                        logging.error(f"新数据集文件 '{input_file_path}' 第 {line_num} 行JSON解析错误: {e}")
+                        continue
+
+                    question = content_data.get('question')
+                    options = content_data.get('options')
+                    other = content_data.get('other')
+
+                    if not question:
+                        logging.warning(f"新数据集文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
+                        continue
+
+                    prompt_content = "注意：禁止输出json格式结果，直接输出文本\n" + question
+                    answer = eval(prompt_content)
+
+                    if answer is not None:
+                        logging.info(f"新数据集: {dataset}, 问题: {question[:50]}..., 回答: {answer[:50]}...")
+                    else:
+                        logging.warning(f"新数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
+
+                    output_content = {
+                        "question": question,
+                        "answer": answer,
+                        "other": other,
+                        "options": options
+                    }
+                    f_out.write(json.dumps(output_content, ensure_ascii=False) + '\n')
+        except IOError as e:
+            logging.error(f"处理新数据集文件 '{input_file_path}' 或 '{output_file_path}' 时发生IO错误: {e}")
+        except Exception as e:
+            logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
+
+
+def run_evaluation():
+    #process_old_test_datasets()
+    process_new_test_datasets()
+    logging.info("所有旧数据集和新数据集处理完成。")
 
 if __name__ == "__main__":
     run_evaluation()

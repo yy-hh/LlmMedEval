@@ -42,8 +42,9 @@ MedBench是一个由上海人工智能实验室开发的医疗领域大模型评
 ## 二、评测方法
 
 1.  **准备模型：** 配置待评测的医疗大模型。
-2.  **修改配置：** 在 `main.py` 中更新模型 API 密钥。
+2.  **修改配置：** 从环境变量中获取模型 API 密钥、模型名称和 API URL。
 3.  **设置输出：** 指定评测结果的输出目录。
+4.  **测试数据确定：** 在 main文件的run_evaluation函数中选择确定使用旧数据集还是新数据集。
 4.  **运行主程序：** 直接执行 `main.py` 文件启动评测。
 5.  **提交结果：** 通过 MedBench 官方平台提交评测结果：[https://medbench.opencompass.org.cn/home](https://medbench.opencompass.org.cn/home)
 
