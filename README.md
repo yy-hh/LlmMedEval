@@ -42,7 +42,7 @@ You are a helpful assistant.
 temperature: 0
 ```
 
-
+## 四、数据集和评测代码来自@MedBench
 ```
 @misc{ding2025medbenchv4robustscalable,
       title={MedBench v4: A Robust and Scalable Benchmark for Evaluating Chinese Medical Language Models, Multimodal Models, and Intelligent Agents}, 
