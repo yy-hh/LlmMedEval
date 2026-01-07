@@ -8,10 +8,10 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
-API_TOKEN = 'your_token'  # 请替换为你的实际API token
-MODEL_NAME = 'your_model'  # 请替换为你的实际模型名称
-API_URL = 'your_url'  # 请替换为你的实际API URL
-OUTPUT_DIR = 'your_output_dir'  # 评测结果输出目录
+API_TOKEN = os.getenv('API_TOKEN', 'your_token')
+MODEL_NAME = os.getenv('MODEL_NAME', 'your_model')
+API_URL = os.getenv('API_URL', 'your_url')
+OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
 
 # 确保输出目录存在
 Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
