@@ -36,11 +36,11 @@
 
 
 ## 四、参数设置
-
-system prompt:You are a helpful assistant.
-<br/>
+```
+system prompt:
+You are a helpful assistant.
 temperature: 0
-
+```
 
 
 
