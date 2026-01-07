@@ -40,11 +40,14 @@ temperature: 0
 
 ## 感谢MedBench提供测试数据
 
-@article{MedBench, 
-author = {Mianxin Liu and Weiguo Hu and Jinru Ding and Jie Xu and Xiaoyang Li and Lifeng Zhu and Zhian Bai and Xiaoming Shi and Benyou Wang and Haitao Song and Pengfei Liu and Xiaofan Zhang and Shanshan Wang and Kang Li and Haofen Wang and Tong Ruan and Xuanjing Huang and Xin Sun and Shaoting Zhang},
-title = {MedBench: A Comprehensive, Standardized, and Reliable Benchmarking System for Evaluating Chinese Medical Large Language Models},
-year = {2024},
-journal = {Big Data Mining and Analytics},
-url = {https://www.sciopen.com/article/10.26599/BDMA.2024.9020044},
-doi = {10.26599/BDMA.2024.9020044}
+```
+@misc{ding2025medbenchv4robustscalable,
+      title={MedBench v4: A Robust and Scalable Benchmark for Evaluating Chinese Medical Language Models, Multimodal Models, and Intelligent Agents}, 
+      author={Jinru Ding and Lu Lu and Chao Ding and Mouxiao Bian and Jiayuan Chen and Wenrao Pang and Ruiyao Chen and Xinwei Peng and Renjie Lu and Sijie Ren and Guanxu Zhu and Xiaoqin Wu and Zhiqiang Liu and Rongzhao Zhang and Luyi Jiang and Bing Han and Yunqiu Wang and Jie Xu},
+      year={2025},
+      eprint={2511.14439},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2511.14439}
 }
+```
