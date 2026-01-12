@@ -59,7 +59,7 @@ temperature: 0
 
 ### 四、致谢
 
-本项目衷心感谢 @MedBench 团队提供的强大评测框架。
+感谢 @MedBench 团队提供评测数据。
 
 ```bibtex
 @misc{ding2025medbenchv4robustscalable,
@@ -74,7 +74,7 @@ temperature: 0
 ```
 ## MedicalAiBenchEval
 
-该医疗 AI 评估框架提供了一套全面的评估体系，专门用于在临床场景中评估 AI 模型。该框架基于 GAPS（Grounded 基于事实、Automated 自动化、Personalized 个性化、Scalable 可扩展）方法论，包含精心整理的临床基准数据集，以及用于医疗 AI 系统的自动化评估流水线。
+这个评估评估专门用于在临床场景中评估 AI 模型，是蚂蚁AQ团队推出的。该框架基于 GAPS（Grounded 基于事实、Automated 自动化、Personalized 个性化、Scalable 可扩展）方法论，包含精心整理的临床基准数据集，以及用于医疗 AI 系统的自动化评估流水线。
 
 该框架通过以下方式满足对 AI 临床决策进行标准化评估的关键需求：
 - 临床扎根评估：评估标准基于真实的医学指南与专家知识
