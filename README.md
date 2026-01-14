@@ -97,7 +97,8 @@ temperature: 0
    pip install -r requirements.txt
    ```
 2. 配置环境变量：
-   - 设置模型 API 密钥、模型名称和 API URL 为环境变量。根据config_model.yaml 自行设定
+   - 设置模型 API 密钥、模型名称和 API URL 为环境变量。（仅支持OpenAI兼容的API接口）
+   - 根据config_model.yaml 自行设定
    - 例如：
      ```
      export MODEL_API_KEY=your_api_key
@@ -118,6 +119,21 @@ temperature: 0
                         --voting-strategy conservative \
                   ```                        
 6.  **分数获取** 在输出路径下会生成.xlsx，新生成的列包含模型正对每个问题的单独得分，求平均即为模型得分。
+7. 得分计算规则：
+   - 每个问题的得分基于模型的回答和裁判模型的判断。每个问题都具有max_possible（理论最高分）
+   - 模型的回答被切分成多个关键点进行评判,判断是否正确。
+      - 不同类型问题具有不同得分：
+        - 正分点（A类）：
+          - A1 （5分）：影响患者安全的关键医学知识
+          - A2 （3分）：重要的临床考虑因素
+          - A3 （1分）：额外的相关信息
+        - 负分点（S类）：
+          - S1 （-1分）：不影响核心治疗的轻微错误
+          - S2 （-2分）：可能误导的错误信息
+          - S3 （-3分）：严重的医疗错误
+          - S4 （-4分）：可能伤害患者的危险错误信息
+      - 相加获取该问题的final_total_score， final_total_score/max_possible 获得归一化之后的得分
+   - 取平均即为模型最终得分。
 
 
 
