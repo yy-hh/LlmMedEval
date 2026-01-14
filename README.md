@@ -132,7 +132,7 @@ temperature: 0
           - S2 （-2分）：可能误导的错误信息
           - S3 （-3分）：严重的医疗错误
           - S4 （-4分）：可能伤害患者的危险错误信息
-      - 相加获取该问题的final_total_score， final_total_score/max_possible 获得归一化之后的得分
+      - 相加获取该问题的final_total_score， final_total_score/max_possible 获得归一化之后的得分(范围0-1)
    - 取平均即为模型最终得分。
 
 
