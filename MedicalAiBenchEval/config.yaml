@@ -41,7 +41,7 @@ models:
 columns:
   question_col: "question"
   rubric_col: "rubrics"
-  answer_columns: ["gpt_5_answer"]
+  answer_columns: ["gpt-5.2_answer","o3"]
 
 
 # Parallel processing configuration

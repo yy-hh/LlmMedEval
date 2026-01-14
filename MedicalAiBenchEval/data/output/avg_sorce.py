@@ -1,8 +1,9 @@
 import pandas as pd
 import json
 from pathlib import Path
+import numpy as np
  
-file_path = "./quick_check_20260113_074316_u3sqij.xlsx "
+file_path = "./quick_check_20260113_232227_3m2cqh.xlsx"
 
 
 def _read_table(input_path: str) -> pd.DataFrame:
@@ -28,22 +29,31 @@ def get_NS(input_file):
     
     def extract_NS(json_str):
         if pd.isna(json_str):
-            return 0.0
-        result = json.loads(json_str)
-        return float(result.get("normalized", 0)),result.get()
+            return np.nan
+        try:
+            if isinstance(json_str, dict):
+                result = json_str
+            else:
+                result = json.loads(str(json_str))
+            v = result.get("normalized", 0)
+            return float(v) if v is not None else np.nan
+        except Exception:
+            return np.nan
 
-    if 'ant_answer_judged_json_scores' in df.columns:
-        df['NS'] = df['ant_answer_judged_json_scores'].apply(extract_NS)
-        df['']
-        avg_NS = df['NS'].mean()
+    if 'o3_judged_json_scores' in df.columns:
+        df['NS'] = df['o3_judged_json_scores'].apply(extract_NS).astype(float)
+        avg_NS = float(df['NS'].mean(skipna=True)) if df['NS'].notna().any() else float("nan")
+        valid_count = int(df['NS'].notna().sum())
         print(f"Average NS: {avg_NS:.4f}")
+        print(f"Valid NS: {valid_count}/{len(df)}")
         count_len=len(df)
         return avg_NS,count_len
     else:
-        print("未找到ant_answer_judged_json_scores列")
+        print("未找到o3_judged_json_scores列")
+        return float("nan"), 0
 
 avg_sorce,count_len=get_NS(file_path)
-
+ 
 print(f"平均得分：{avg_sorce}")
 print(f"样本数量：{count_len}")
         

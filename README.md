@@ -84,7 +84,53 @@ temperature: 0
 - 可扩展架构：支持并行执行，高效处理大规模数据集
 
 
-### 评测结果
+### 一、评测结果
 | 模型               | 是否开源 | 得分 |   
 | ----------------- | ------- | -------- | 
 |antAngleMed-FP8  |    是  |   0.2533|
+|GPT-5.2  |    否  |   0.3697|
+|o3  |    否  |   0.4009|
+
+### 二、环境准备
+1. 安装必要的 Python 库：
+   ```
+   pip install -r requirements.txt
+   ```
+2. 配置环境变量：
+   - 设置模型 API 密钥、模型名称和 API URL 为环境变量。根据config_model.yaml 自行设定
+   - 例如：
+     ```
+     export MODEL_API_KEY=your_api_key
+     export MODEL_NAME=your_model_name
+     export MODEL_API_URL=your_api_url
+     ```
+
+### 三、评测方法
+1.  **准备模型：** 配置待评测的医疗大模型。
+2.  **获取 API 密钥：** 从模型供应商获取 API 密钥，用于访问模型的 API。
+3.  **获取模型问答：** 针对“data\input\GAPS-NSCLC-preview.xlsx” 测试集，获取模型的问答结果。 
+4.  **裁判模型配置：** 修改config_model.yaml文件,从环境变量中获取模型 API 密钥、模型名称和 API URL,设置为裁判模型
+5.  **开始评测：** 根据模型生成的问答和裁判模型的判断，计算模型的得分。 
+                  ```
+                  python medical_evaluation_pipeline.py data/input/GAPS-NSCLC-preview.xlsx \
+                        -o data/output/final_report.xlsx \
+                        --judge-models m4 \
+                        --voting-strategy conservative \
+                  ```                        
+6.  **分数获取** 在输出路径下会生成.xlsx，新生成的列包含模型正对每个问题的单独得分，求平均即为模型得分。
+
+
+
+### 四、致谢
+
+感谢 @ AQ 团队提供评测数据。
+
+```bibtex
+@article{chen2025gaps,
+  title={GAPS: A Clinically Grounded, Automated Benchmark for Evaluating AI Clinicians},
+  author={Chen, Xiuyuan and Sun, Tao and Su, Dexin and Yu, Ailing and Liu, Junwei and Chen, Zhe and Jin, Gangzeng and Wang, Xin and Liu, Jingnan and Xiao, Hansong and Zhou, Hualei and Tao, Dongjie and Guo, Chunxiao and Yang, Minghui and Xia, Yuan and Zhao, Jing and Fan, Qianrui and Wang, Yanyun and Zhen, Shuai and Chen, Kezhong and Wang, Jun and Sun, Zewen and Zhao, Heng and Guan, Tian and Wang, Shaodong and Chang, Geyun and Deng, Jiaming and Chen, Hongchengcheng and Feng, Kexin and Li, Ruzhen and Geng, Jiayi and Zhao, Changtai and Wang, Jun and Lin, Guihu and Li, Peihao and Liu, Liqi and Wei, Peng and Wang, Jian and Gu, Jinjie and Wang, Ping and Yang, Fan},
+  journal={arXiv preprint arXiv:2510.13734},
+  year={2025},
+  url={https://arxiv.org/abs/2510.13734}
+}
+```
