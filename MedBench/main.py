@@ -3,14 +3,16 @@ import json
 import os
 import logging
 from pathlib import Path
-
+import base64, mimetypes
 # 配置日志
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
-API_TOKEN = os.getenv('API_TOKEN', 'your_token')
-MODEL_NAME = os.getenv('MODEL_NAME', 'your_model')
-API_URL = os.getenv('API_URL', 'your_url')
+API_TOKEN = os.getenv('API_TOKEN', '12b735b571e045e0a54a195c7318a430')
+MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
+API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
+
+print(API_TOKEN,MODEL_NAME,API_URL)
 #旧数据集
 #OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
 #新数据集
@@ -18,21 +20,29 @@ OUTPUT_DIR = f'new_test_results/test_result_{MODEL_NAME}'
 
 # 确保输出目录存在
 Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+def to_data_url(path: str) -> str:
+    mime, _ = mimetypes.guess_type(path)
+    mime = mime or "image/png"
+    with open(path, "rb") as f:
+        b64 = base64.b64encode(f.read()).decode("utf-8")
+    return f"data:{mime};base64,{b64}"
 
-def eval(prompt):
+def eval(question, image_path: str | None = None):
+    content = [{"type": "text", "text": question}]
+    if image_path:
+        data_url = to_data_url(image_path)
+        content.append({"type": "image_url", "image_url": {"url": data_url}})
     try:
         headers = {
             'Authorization': f'Bearer {API_TOKEN}',
         }
-
+        
         json_data = {
-            'model': MODEL_NAME,
-            'messages': [
-                {
-                    'role': 'user',
-                    'content': f"{prompt}",
-                },
-            ]
+            "model": MODEL_NAME,
+            "messages": [
+                {"role": "system", "content": "you are a helpful assistant."},
+                {"role": "user", "content": content},
+            ],
         }
 
         response = requests.post(API_URL, headers=headers, json=json_data)
@@ -155,7 +165,7 @@ def process_new_test_datasets():
                         logging.warning(f"新数据集文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
                         continue
 
-                    prompt_content = "注意：禁止输出json格式结果，直接输出文本\n" + question
+                    prompt_content = question
                     answer = eval(prompt_content)
 
                     if answer is not None:
@@ -175,11 +185,68 @@ def process_new_test_datasets():
         except Exception as e:
             logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
 
+def process_VLM_datasets():
+    vlm_test_data_dir = Path('MedBench_VLM')
+    if not vlm_test_data_dir.is_dir():
+        logging.warning(f"VLM测试数据集目录 '{vlm_test_data_dir}' 不存在，跳过。")
+        return
+
+    files = [p for p in vlm_test_data_dir.iterdir() if p.is_file() and p.suffix == '.jsonl']
+    if not files:
+        logging.warning(f"在VLMP测试数据集目录 '{vlm_test_data_dir}' 中未找到任何 jsonl 文件。")
+        return
+
+    for input_file_path in files:
+        dataset = input_file_path.stem
+        output_file_path = Path(OUTPUT_DIR) / f'{dataset}_test.jsonl'
+
+        logging.info(f"开始处理VLMP数据集: {dataset}")
+        try:
+            with open(input_file_path, 'r', encoding='utf-8') as f_in, \
+                    open(output_file_path, 'w', encoding='utf-8') as f_out:
+                for line_num, line in enumerate(f_in, 1):
+                    try:
+                        content_data = json.loads(line)
+                    except json.JSONDecodeError as e:
+                        logging.error(f"新数据集文件 '{input_file_path}' 第 {line_num} 行JSON解析错误: {e}")
+                        continue
+
+                    question = content_data.get('question')
+                    options = content_data.get('options')
+                    img_path = f"{vlm_test_data_dir}/{content_data.get('img_path')[0]}"
+                    other = content_data.get('other')
+
+                    if not question:
+                        logging.warning(f"新数据集文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
+                        continue
+
+                    # prompt_content = "注意：禁止输出json格式结果，直接输出文本\n" + question
+                    answer = eval(question,img_path)
+                    print(answer)
+                    # if answer is not None:
+                    #     logging.info(f"新数据集: {dataset}, 问题: {question[:50]}..., 回答: {answer[:50]}...")
+                    # else:
+                    #     logging.warning(f"新数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
+                    
+                    output_content = {
+                        "question": question,
+                        "answer": answer,
+                        "other": other,
+                        "img_path": content_data.get('img_path'),
+                        "options": options
+                    }
+                    f_out.write(json.dumps(output_content, ensure_ascii=False) + '\n')
+        except IOError as e:
+            logging.error(f"处理新数据集文件 '{input_file_path}' 或 '{output_file_path}' 时发生IO错误: {e}")
+        except Exception as e:
+            logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
 
 def run_evaluation():
     #process_old_test_datasets()
-    process_new_test_datasets()
-    logging.info("所有旧数据集和新数据集处理完成。")
+    # process_new_test_datasets()
+    process_VLM_datasets()
+    return
+
 
 if __name__ == "__main__":
     run_evaluation()
