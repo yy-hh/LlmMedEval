@@ -12,11 +12,14 @@ API_TOKEN = os.getenv('API_TOKEN', '12b735b571e045e0a54a195c7318a430')
 MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
 API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
 
+<<<<<<< HEAD
 print(API_TOKEN,MODEL_NAME,API_URL)
 
 # 确保输出目录存在
 #Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
+=======
+>>>>>>> fc6c49b9b629583de7d6a2b053061c72206342d1
 def to_data_url(path: str) -> str:
     mime, _ = mimetypes.guess_type(path)
     mime = mime or "image/png"
@@ -70,6 +73,10 @@ def eval(question, image_path: str | None = None):
         return None
 
 def process_old_test_datasets():
+    #新数据集
+    OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
+    # 确保输出目录存在
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
     test_dataset_dir = Path('test_dataset')
     if not test_dataset_dir.is_dir():
         logging.warning(f"旧测试数据集目录 '{test_dataset_dir}' 不存在，跳过。")
@@ -128,8 +135,11 @@ def process_old_test_datasets():
             logging.error(f"处理旧数据集 '{dataset}' 时发生未知错误: {e}")
 
 def process_new_test_datasets():
-    OUTPUT_DIR = f'LLM_test_results/test_result_{MODEL_NAME}'
-    new_test_data_dir = Path('LLM_test_data')
+    #新数据集
+    OUTPUT_DIR = f'new_test_results/test_result_{MODEL_NAME}'
+    # 确保输出目录存在
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+    new_test_data_dir = Path('new_test_data')
     if not new_test_data_dir.is_dir():
         logging.warning(f"新测试数据集目录 '{new_test_data_dir}' 不存在，跳过。")
         return
@@ -183,7 +193,10 @@ def process_new_test_datasets():
             logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
 
 def process_VLM_datasets():
+     #新数据集
     OUTPUT_DIR = f'VLM_test_results/test_result_{MODEL_NAME}'
+    # 确保输出目录存在
+    Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
     vlm_test_data_dir = Path('VLM_test_data')
     if not vlm_test_data_dir.is_dir():
         logging.warning(f"VLM测试数据集目录 '{vlm_test_data_dir}' 不存在，跳过。")
