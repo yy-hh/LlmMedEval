@@ -4,7 +4,7 @@ import os
 import logging
 from pathlib import Path
 import base64, mimetypes
-# 配置日志
+# 配置日志1
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
