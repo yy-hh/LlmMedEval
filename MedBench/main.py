@@ -8,9 +8,9 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
-API_TOKEN = os.getenv('API_TOKEN', 'your_token')
-MODEL_NAME = os.getenv('MODEL_NAME', 'your_model')
-API_URL = os.getenv('API_URL', 'your_url')
+API_TOKEN = os.getenv('API_TOKEN')
+MODEL_NAME = os.getenv('MODEL_NAME')
+API_URL = os.getenv('API_URL')
 #旧数据集
 #OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
 #新数据集
@@ -119,7 +119,6 @@ def process_old_test_datasets():
             logging.error(f"处理旧数据集文件 '{input_file_path}' 或 '{output_file_path}' 时发生IO错误: {e}")
         except Exception as e:
             logging.error(f"处理旧数据集 '{dataset}' 时发生未知错误: {e}")
-
 
 def process_new_test_datasets():
     new_test_data_dir = Path('new_test_data')
