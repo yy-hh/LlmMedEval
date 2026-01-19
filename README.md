@@ -86,15 +86,15 @@ temperature: 0
 
 
 ### 一、评测结果
-| 模型                          | 是否开源                            | 得分                                    |   
-| ---------------------------- | ---------------------------------- | --------------------------------------- | 
-|antAngleMed-FP8               |    是           |    0.2533        |
-|GPT-5.2                       |    否           |    0.3697        |
-|o3                            |    否           |    0.4009        |
-|Baichuan-M3                   |    否           |    0.2535        |
-|Baichuan-M2                   |    是           |                  |
-|Deepseek-V3.2                 |    否           |                  |
-|doubao-1.8                    |    否           |                  |
+| 模型 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | 是否开源 | 得分 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+| :--- | :---: | :---: |
+| antAngleMed-FP8 | 是 | 0.2533 |
+| GPT-5.2 | 否 | 0.3697 |
+| o3 | 否 | 0.4009 |
+| Baichuan-M3 | 否 | 0.2535 |
+| Baichuan-M2 | 是 | - |
+| Deepseek-V3.2 | 否 | - |
+| doubao-1.8 | 否 | - |
 
 
 
