@@ -185,7 +185,7 @@ def process_new_test_datasets():
             logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
 
 def process_VLM_datasets():
-    vlm_test_data_dir = Path('MedBench_VLM')
+    vlm_test_data_dir = Path('VLM_test_data')
     if not vlm_test_data_dir.is_dir():
         logging.warning(f"VLM测试数据集目录 '{vlm_test_data_dir}' 不存在，跳过。")
         return
