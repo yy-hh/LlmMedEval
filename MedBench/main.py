@@ -13,13 +13,10 @@ MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
 API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
 
 print(API_TOKEN,MODEL_NAME,API_URL)
-#旧数据集
-#OUTPUT_DIR = f'test_results/test_result_{MODEL_NAME}'
-#新数据集
-OUTPUT_DIR = f'new_test_results/test_result_{MODEL_NAME}'
 
 # 确保输出目录存在
-Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+#Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+
 def to_data_url(path: str) -> str:
     mime, _ = mimetypes.guess_type(path)
     mime = mime or "image/png"
@@ -131,7 +128,8 @@ def process_old_test_datasets():
             logging.error(f"处理旧数据集 '{dataset}' 时发生未知错误: {e}")
 
 def process_new_test_datasets():
-    new_test_data_dir = Path('new_test_data')
+    OUTPUT_DIR = f'LLM_test_results/test_result_{MODEL_NAME}'
+    new_test_data_dir = Path('LLM_test_data')
     if not new_test_data_dir.is_dir():
         logging.warning(f"新测试数据集目录 '{new_test_data_dir}' 不存在，跳过。")
         return
@@ -143,7 +141,7 @@ def process_new_test_datasets():
 
     for input_file_path in files:
         dataset = input_file_path.stem
-        output_file_path = Path(OUTPUT_DIR) / f'{dataset}_test.jsonl'
+        output_file_path = Path(OUTPUT_DIR) / f'{dataset}.jsonl'
 
         logging.info(f"开始处理新数据集: {dataset}")
         try:
@@ -185,6 +183,7 @@ def process_new_test_datasets():
             logging.error(f"处理新数据集 '{dataset}' 时发生未知错误: {e}")
 
 def process_VLM_datasets():
+    OUTPUT_DIR = f'VLM_test_results/test_result_{MODEL_NAME}'
     vlm_test_data_dir = Path('VLM_test_data')
     if not vlm_test_data_dir.is_dir():
         logging.warning(f"VLM测试数据集目录 '{vlm_test_data_dir}' 不存在，跳过。")
@@ -197,7 +196,7 @@ def process_VLM_datasets():
 
     for input_file_path in files:
         dataset = input_file_path.stem
-        output_file_path = Path(OUTPUT_DIR) / f'{dataset}_test.jsonl'
+        output_file_path = Path(OUTPUT_DIR) / f'{dataset}.jsonl'
 
         logging.info(f"开始处理VLMP数据集: {dataset}")
         try:
@@ -242,8 +241,8 @@ def process_VLM_datasets():
 
 def run_evaluation():
     #process_old_test_datasets()
-    # process_new_test_datasets()
-    process_VLM_datasets()
+    process_new_test_datasets()
+    #process_VLM_datasets()
     return
 
 
