@@ -12,14 +12,6 @@ API_TOKEN = os.getenv('API_TOKEN', '12b735b571e045e0a54a195c7318a430')
 MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
 API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
 
-<<<<<<< HEAD
-print(API_TOKEN,MODEL_NAME,API_URL)
-
-# 确保输出目录存在
-#Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-
-=======
->>>>>>> fc6c49b9b629583de7d6a2b053061c72206342d1
 def to_data_url(path: str) -> str:
     mime, _ = mimetypes.guess_type(path)
     mime = mime or "image/png"
