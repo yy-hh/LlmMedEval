@@ -8,9 +8,9 @@ import base64, mimetypes
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
-API_TOKEN = os.getenv('API_TOKEN', '12b735b571e045e0a54a195c7318a430')
-MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
-API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
+API_TOKEN = os.getenv('API_TOKEN', '')
+MODEL_NAME = os.getenv('MODEL_NAME', '')
+API_URL = os.getenv('API_URL', '')
 
 def to_data_url(path: str) -> str:
     mime, _ = mimetypes.guess_type(path)
@@ -221,7 +221,7 @@ def process_VLM_datasets():
                         logging.warning(f"VLMP数据集文件 '{input_file_path}' 第 {line_num} 行缺少或格式错误的 'img_path' 字段，跳过。")
                         continue
                     #img_path = f"{vlm_test_data_dir}/{img_list[0]}"
-                    img_paths = [
+                    img_path = [
                         str(vlm_test_data_dir / img) for img in img_list
                     ]
                     other = content_data.get('other')
