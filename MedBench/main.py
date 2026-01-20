@@ -254,17 +254,6 @@ def process_VLM_datasets():
 
                     question = content_data.get('question')
                     options = content_data.get('options')
-<<<<<<< HEAD
-=======
-                    img_list = content_data.get('img_path')
-                    if not img_list or not isinstance(img_list, list):
-                        logging.warning(f"VLMP数据集文件 '{input_file_path}' 第 {line_num} 行缺少或格式错误的 'img_path' 字段，跳过。")
-                        continue
-                    #img_path = f"{vlm_test_data_dir}/{img_list[0]}"
-                    img_path = [
-                        str(vlm_test_data_dir / img) for img in img_list
-                    ]
->>>>>>> 3362ae4f24741cfad194f82ff26b7ea5822cabaf
                     other = content_data.get('other')
                     raw_img_list = content_data.get('img_path')
                     if isinstance(raw_img_list, str):
