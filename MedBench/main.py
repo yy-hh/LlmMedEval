@@ -4,13 +4,50 @@ import os
 import logging
 from pathlib import Path
 import base64, mimetypes
+import os
+from dotenv import load_dotenv
+import fitz  # PyMuPDF
+from pathlib import Path
+
+
+os.environ['NO_PROXY'] = 'freeland.openai.azure.com'
+load_dotenv()
 # 配置日志1
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 配置参数
-API_TOKEN = os.getenv('API_TOKEN', '12b735b571e045e0a54a195c7318a430')
+API_TOKEN = os.getenv('API_TOKEN')
 MODEL_NAME = os.getenv('MODEL_NAME', 'gpt-5.2')
-API_URL = os.getenv('API_URL', 'https://freeland.openai.azure.com/openai/v1/chat/completions')
+API_URL = os.getenv('API_URL')
+
+def pdf_to_images(
+    pdf_path: str,
+    out_dir: Path,
+    max_pages: int = 5,
+    zoom: float = 2.0) -> list[str]:
+    """
+    使用 PyMuPDF 将 PDF 转为图片
+    """
+    out_dir.mkdir(parents=True, exist_ok=True)
+    prefix = Path(pdf_path).stem
+
+    existing = sorted(out_dir.glob(f"{prefix}_page_*.png"))
+    if existing:
+        return [str(p) for p in existing]
+
+    doc = fitz.open(pdf_path)
+    image_paths = []
+
+    for page_idx in range(min(len(doc), max_pages)):
+        page = doc.load_page(page_idx)
+        mat = fitz.Matrix(zoom, zoom)
+        pix = page.get_pixmap(matrix=mat)
+
+        img_path = out_dir / f"{prefix}_page_{page_idx + 1}.png"
+        pix.save(img_path)
+        image_paths.append(str(img_path))
+
+    return image_paths
 
 def to_data_url(path: str) -> str:
     mime, _ = mimetypes.guess_type(path)
@@ -19,11 +56,12 @@ def to_data_url(path: str) -> str:
         b64 = base64.b64encode(f.read()).decode("utf-8")
     return f"data:{mime};base64,{b64}"
 
-def eval(question, image_path: str | None = None):
+def eval(question: str, image_path: list[str] | None = None):
     content = [{"type": "text", "text": question}]
     if image_path:
-        data_url = to_data_url(image_path)
-        content.append({"type": "image_url", "image_url": {"url": data_url}})
+        for img in image_path:
+            data_url = to_data_url(img)
+            content.append({"type": "image_url", "image_url": {"url": data_url}})
     try:
         headers = {
             'Authorization': f'Bearer {API_TOKEN}',
@@ -216,27 +254,51 @@ def process_VLM_datasets():
 
                     question = content_data.get('question')
                     options = content_data.get('options')
-                    img_list = content_data.get('img_path')
-                    if not img_list or not isinstance(img_list, list):
-                        logging.warning(f"VLMP数据集文件 '{input_file_path}' 第 {line_num} 行缺少或格式错误的 'img_path' 字段，跳过。")
-                        continue
-                    #img_path = f"{vlm_test_data_dir}/{img_list[0]}"
-                    img_paths = [
-                        str(vlm_test_data_dir / img) for img in img_list
-                    ]
                     other = content_data.get('other')
-
-                    if not question:
-                        logging.warning(f"新数据集文件 '{input_file_path}' 第 {line_num} 行缺少 'question' 字段，跳过。")
+                    raw_img_list = content_data.get('img_path')
+                    if isinstance(raw_img_list, str):
+                        img_list = [raw_img_list]
+                    elif isinstance(raw_img_list, list):
+                        img_list = raw_img_list
+                    else:
+                        logging.warning(
+                            f"{input_file_path} 第 {line_num} 行 img_path 类型非法: {type(raw_img_list)}"
+                        )
                         continue
 
+                    final_image_paths = []
+                    for img in img_list:
+                        full_path = vlm_test_data_dir / img
+
+                        if not full_path.exists():
+                            logging.warning(f"{full_path} 不存在，跳过")
+                            continue
+
+                        suffix = full_path.suffix.lower()
+
+                        # ---- 情况 1：普通图片 ----
+                        if suffix in [".png", ".jpg", ".jpeg", ".bmp", ".webp"]:
+                            final_image_paths.append(str(full_path))
+
+                        # ---- 情况 2：PDF ----
+                        elif suffix == ".pdf":
+                            pdf_images = pdf_to_images(
+                                pdf_path=str(full_path),
+                                out_dir=vlm_test_data_dir / "_pdf_cache" / dataset,
+                            )
+                            final_image_paths.extend(pdf_images)
+
+                        else:
+                            logging.warning(f"不支持的文件类型: {full_path}")
+                    # if not img_list or not isinstance(img_list, list):
+                    #     img_path = img_list
+                    #     #logging.warning(f"VLMP数据集文件 '{input_file_path}' 第 {line_num} 行缺少或格式错误的 'img_path' 字段，跳过。")
+                    #     #continue
+                    # #img_path = f"{vlm_test_data_dir}/{img_list[0]}
                     # prompt_content = "注意：禁止输出json格式结果，直接输出文本\n" + question
-                    answer = eval(question,img_path)
+                    answer = eval(question,final_image_paths)
                     print(answer)
-                    # if answer is not None:
-                    #     logging.info(f"新数据集: {dataset}, 问题: {question[:50]}..., 回答: {answer[:50]}...")
-                    # else:
-                    #     logging.warning(f"新数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
+                    #logging.warning(f"新数据集: {dataset}, 问题: {question[:50]}..., 未能获取回答。")
                     
                     output_content = {
                         "question": question,

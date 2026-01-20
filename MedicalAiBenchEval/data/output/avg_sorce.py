@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import numpy as np
  
-file_path = "./quick_check_20260118_093737_sj8yze.xlsx"
+file_path = "./quick_check_20260119_154827_n1me2j.xlsx"
 
 
 def _read_table(input_path: str) -> pd.DataFrame:
@@ -40,8 +40,8 @@ def get_NS(input_file):
         except Exception:
             return np.nan
 
-    if 'baichuan-m3_judged_json_scores' in df.columns:
-        df['NS'] = df['baichuan-m3_judged_json_scores'].apply(extract_NS).astype(float)
+    if 'Baichuan-M2-32B-answer_judged_json_scores' in df.columns:
+        df['NS'] = df['Baichuan-M2-32B-answer_judged_json_scores'].apply(extract_NS).astype(float)
         avg_NS = float(df['NS'].mean(skipna=True)) if df['NS'].notna().any() else float("nan")
         valid_count = int(df['NS'].notna().sum())
         print(f"Average NS: {avg_NS:.4f}")
@@ -49,7 +49,7 @@ def get_NS(input_file):
         count_len=len(df)
         return avg_NS,count_len
     else:
-        print("未找到baichuan-m3_judged_json_scores列")
+        print("未找到Baichuan-M2-32B-answer_judged_json_scores列")
         return float("nan"), 0
 
 avg_sorce,count_len=get_NS(file_path)
