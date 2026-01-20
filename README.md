@@ -59,9 +59,8 @@ MedBench是一个由上海人工智能实验室开发的医疗领域大模型评
 ```
 system prompt:
 You are a helpful assistant.
-temperature: 0
 ```
-
+提示词设计很重要，很多得分比较低模型是输出格式不匹配，这边没有针对性的做改动，保留模型做原始的结果。
 ### 四、致谢
 
 感谢 @MedBench 团队提供评测数据。
