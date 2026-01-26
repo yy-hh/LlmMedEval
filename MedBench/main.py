@@ -227,7 +227,7 @@ def process_VLM_datasets():
     OUTPUT_DIR = f'VLM_test_results/test_result_{MODEL_NAME}'
     # 确保输出目录存在
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
-    vlm_test_data_dir = Path('VLM_test_data')
+    vlm_test_data_dir = Path('VLM_test_data_s')
     if not vlm_test_data_dir.is_dir():
         logging.warning(f"VLM测试数据集目录 '{vlm_test_data_dir}' 不存在，跳过。")
         return
@@ -253,9 +253,8 @@ def process_VLM_datasets():
                         continue
 
                     question = content_data.get('question')
-                    options = content_data.get('options')
                     other = content_data.get('other')
-                    raw_img_list = content_data.get('img_path')
+                    raw_img_list = content_data.get('img_path')[0]
                     if isinstance(raw_img_list, str):
                         img_list = [raw_img_list]
                     elif isinstance(raw_img_list, list):
@@ -303,9 +302,8 @@ def process_VLM_datasets():
                     output_content = {
                         "question": question,
                         "answer": answer,
-                        "other": other,
                         "img_path": content_data.get('img_path'),
-                        "options": options
+                        "other": other,
                     }
                     f_out.write(json.dumps(output_content, ensure_ascii=False) + '\n')
         except IOError as e:
