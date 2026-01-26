@@ -185,15 +185,15 @@ HealthBench 采用评分标准评估体系，每条模型回复均依据医生�
 
 
 ### 三：结果分析
-数据集类型分布： all:5000
-communication: 919,
-hedging: 1071,
-global_health: 1097,
-context_seeking: 594,
-emergency_referrals: 482,
-health_data_tasks: 477,
-complex_responses: 360,
-格式：得分（标准差）
+数据集类型分布： all:5000  
+ - communication: 919,  
+ - hedging: 1071,  
+ - global_health: 1097,  
+ - context_seeking: 594,  
+ - emergency_referrals: 482,  
+ - health_data_tasks: 477,  
+ - complex_responses: 360,  
+格式：得分（标准差）  
 | 模型 | 开源 | 综合得分 | communication | hedging | global_health | context_seeking | emergency_referrals | health_data_tasks | complex_responses |
 | --- | --- | ------- | ------------- | -------- | ------------ | ---------------- | ------------------ | ------------------| ------------------ |
 | AntAngelMed-FP8  | 是 | 0.435(0.0049)  | 0.391(0.012)  | 0.528(0.008) |  0.457(0.009)  | 0.467(0.014) | 0.493(0.013) | 0.3455(0.020) | 0.186(0.022) |
