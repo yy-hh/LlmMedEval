@@ -169,7 +169,6 @@ HealthBench 采用评分标准评估体系，每条模型回复均依据医生�
 官网：https://openai.com/zh-Hans-CN/index/healthbench/
 
 ### 二：使用方法
-<<<<<<< HEAD
 1.  **准备模型：** 配置待评测的医疗大模型-（run_healthbench.py文件中进行配置）。
 2.  **配置裁判模型** 从模型供应商获取 API 密钥。（run_healthbench.py文件中进行配置）
 3.  **运行评测指令：** 
@@ -177,32 +176,16 @@ HealthBench 采用评分标准评估体系，每条模型回复均依据医生�
   python run_healthbench.py --model Baichuan-M2 --eval healthbench  --debug --n-threads 3
   运行指令：
   python run_healthbench.py --model Baichuan-M2 --eval healthbench  --n-threads 3    
-=======
-1.  **准备模型：** 配置待评测的医疗大模型-（simple-eval.py文件中进行配置）。
-2.  **配置裁判模型** 从模型供应商获取 API 密钥。（simple-eval.py文件中进行配置）
-3.  **运行评测指令：** 
-  测试指令：
-  python simple_evals.py --model Baichuan-M3 --eval healthbench  --debug --n-threads 3
-  运行指令：
-  python simple_evals.py --model Baichuan-M3 --eval healthbench  --n-threads 3    
->>>>>>> 62875be86f856f9b3bf10f15b176dc1ccfaf6e68
   参数解读
   - `--model`：指定待评测的医疗大模型名称。
   - `--eval`：指定评测数据集，这里是healthbench。
   - `--debug`：开启调试模式，输出详细信息。
-<<<<<<< HEAD
   - `--n-threads`：指定并发线程数，默认为120。
-=======
-  - `--n-threads`：指定并发线程数，默认为3。
->>>>>>> 62875be86f856f9b3bf10f15b176dc1ccfaf6e68
 4.  **分数获取**  根据配置的输出路径，生成.json和html 文件
 
 
 ### 三：结果分析
-<<<<<<< HEAD
 #### 3.1 HealthBench 数据集
-=======
->>>>>>> 62875be86f856f9b3bf10f15b176dc1ccfaf6e68
 数据集类型分布： all:5000  
  - communication: 919,  
  - hedging: 1071,  
