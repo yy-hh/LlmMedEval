@@ -159,8 +159,8 @@ You are a helpful assistant.
   url={https://arxiv.org/abs/2510.13734}
 }
 ```
-## healthbench
-数据集描述
+## Healthbench
+### 一：数据集描述
 HealthBench 是openai发布的用评估AI模型在真实医疗场景中的表现的框架。
 
 HealthBench 包含 5,000 次对话，模拟 AI 模型与个体用户或临床医生的交互过程。模型的任务是针对用户最后一条消息提供最佳回复。HealthBench 对话通过合成生成与人类对抗测试双重方式创建。这些对话场景旨在还原大型语言模型真实应用场景：它们采用多轮交互与多语言设计，涵盖普通民众与医疗从业者的多元角色，横跨各类医学专科与临床情境，并根据难度进行精选。具体示例请参见下方轮播图。
@@ -168,4 +168,43 @@ HealthBench 包含 5,000 次对话，模拟 AI 模型与个体用户或临床医
 HealthBench 采用评分标准评估体系，每条模型回复均依据医生撰写的特定对话评分标准进行评分。每个标准明确规定理想回复应包含或避免的内容，例如需包含的具体事实或应避免的冗余技术术语。各标准对应特定权重值，该权重反映医生对该标准重要性的判断。HealthBench 包含 48,562 项独特评分标准，全面覆盖模型表现的各个维度。模型回复由基于模型的评分系统 (GPT‑4.1) 评估是否满足各项标准，并根据达标标准总分与满分的对比结果获得综合评分。
 官网：https://openai.com/zh-Hans-CN/index/healthbench/
 
-进行中...
+### 二：使用方法
+1.  **准备模型：** 配置待评测的医疗大模型-（run_healthbench.py文件中进行配置）。
+2.  **配置裁判模型** 从模型供应商获取 API 密钥。（run_healthbench.py文件中进行配置）
+3.  **运行评测指令：** 
+  测试指令：
+  python run_healthbench.py --model Baichuan-M2 --eval healthbench  --debug --n-threads 3
+  运行指令：
+  python run_healthbench.py --model Baichuan-M2 --eval healthbench  --n-threads 3    
+  参数解读
+  - `--model`：指定待评测的医疗大模型名称。
+  - `--eval`：指定评测数据集，这里是healthbench。
+  - `--debug`：开启调试模式，输出详细信息。
+  - `--n-threads`：指定并发线程数，默认为120。
+4.  **分数获取**  根据配置的输出路径，生成.json和html 文件
+
+
+### 三：结果分析
+#### 3.1 HealthBench 数据集
+数据集类型分布： all:5000  
+ - communication: 919,  
+ - hedging: 1071,  
+ - global_health: 1097,  
+ - context_seeking: 594,  
+ - emergency_referrals: 482,  
+ - health_data_tasks: 477,  
+ - complex_responses: 360,  
+ 格式：得分（标准差）  
+ 
+| 模型 | 开源 | 综合得分 | communication | hedging | global_health | context_seeking | emergency_referrals | health_data_tasks | complex_responses |
+| --- | --- | ------- | ------------- | -------- | ------------ | ---------------- | ------------------ | ------------------| ------------------ |
+| AntAngelMed-FP8  | 是 | 0.435(0.0049)  | 0.391(0.012)  | 0.528(0.008) |  0.457(0.009)  | 0.467(0.014) | 0.493(0.013) | 0.3455(0.020) | 0.186(0.022) |
+| Baichuan-M2  | 是 | 0.422(0.005)  | 0.397(0.013)  | 0.507(0.009) |  0.436(0.010)  | 0.434(0.013) | 0.497(0.013) | 0.308(0.020) | 0.223(0.022) |
+
+#### HealthBench_hard 数据集
+| 模型 | 开源 | 综合得分 | communication | hedging | global_health | context_seeking | emergency_referrals | health_data_tasks | complex_responses |
+| --- | --- | ------- | ------------- | -------- | ------------ | ---------------- | ------------------ | ------------------| ------------------ |
+| AntAngelMed-FP8  | 是 | 0.239(0.010)  | 0.146(0.036)  | 0.337(0.028) |  0.259(0.017)  | 0.321(0.021) | 0.315(0.032) | 0.130(0.038) | 0.006(0.022) |
+| Baichuan-M2  | 是 | 0.209(0.011)  |  0.144(0.047)  | 0.312(0.022)  | 0.244(0.019) |  0.280(0.022)  | 0.269(0.034) | 0.067(0.039) | 0.0(0.006) | 
+
+### 四：致谢
